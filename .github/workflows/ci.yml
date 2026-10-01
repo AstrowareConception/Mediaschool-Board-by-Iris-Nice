@@ -1,0 +1,34 @@
+name: Socle et intégration
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  starter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configuration fictive
+        run: cp .env.example .env
+      - name: Build et santé des trois services
+        run: docker compose up -d --build --wait --wait-timeout 180
+      - name: Syntaxe PHP
+        run: docker compose exec -T api sh -c 'find src public bin examples tests -name "*.php" -print0 | xargs -0 -n1 php -l'
+      - name: Tests unitaires des exemples
+        run: docker compose exec -T api composer test
+      - name: Tests Slim et PostgreSQL
+        run: docker compose exec -T api composer smoke
+      - name: Proxy HTTP et ouverture désactivée
+        run: |
+          curl --fail http://127.0.0.1:8080/api/health
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/admin/registrations)" = 401
+          test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:8080/api/registrations)" = 503
+      - name: Diagnostic sans formulaires
+        if: failure()
+        run: docker compose logs --tail=100
+      - name: Arrêt de la pile CI jetable
+        if: always()
+        run: docker compose down -v
