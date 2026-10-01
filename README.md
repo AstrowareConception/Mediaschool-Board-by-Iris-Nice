@@ -1,5 +1,7 @@
 # Mediaschool Board by Iris Nice
 
+[![Socle et intégration](https://github.com/AstrowareConception/Mediaschool-Board-by-Iris-Nice/actions/workflows/ci.yml/badge.svg)](https://github.com/AstrowareConception/Mediaschool-Board-by-Iris-Nice/actions/workflows/ci.yml)
+
 **Mini-projet BTS SIO, deuxième année — livraison pour le salon Studyrama du samedi 3 octobre 2026.**
 
 Vous réalisez en équipe une application mobile de collecte des visites au salon. Le visiteur scanne un QR code, renseigne son projet de formation et reçoit une confirmation. L’équipe du salon consulte les fiches dans un espace protégé, compte les visites par école et niveau, exporte le récapitulatif en CSV/PDF et peut l’envoyer à une adresse autorisée.
@@ -71,6 +73,7 @@ Sous PowerShell, remplacez `cp` par `Copy-Item .env.example .env`. Ouvrez [http:
 - [09 — Packaging, transmission et exploitation](docs/09-deploiement.md)
 - [10 — Compétences BTS SIO et preuves individuelles](docs/10-competences-bts.md)
 - [11 — Mode d’emploi pour l’équipe du salon](docs/11-guide-utilisateur.md)
+- [12 — Vérifications du starter et limites de cette validation](docs/12-validation-starter.md)
 - [Sources et transcription du formulaire](docs/sources/README.md)
 
 ## Architecture commune à toutes les équipes
