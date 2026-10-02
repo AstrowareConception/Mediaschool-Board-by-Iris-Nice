@@ -44,6 +44,8 @@ docker compose exec api composer test
 docker compose exec api composer smoke
 ```
 
+**Correctif Windows du 2 octobre :** le démarrage est vérifié avec un script LF et avec le même script converti en CRLF. Pour un kit déjà cloné : `git pull --ff-only`, puis `docker compose up -d --build --force-recreate --wait`. Voir [les résultats de la recette](docs/12-validation-starter.md).
+
 Sous PowerShell, remplacez `cp` par `Copy-Item .env.example .env`. Ouvrez [http://localhost:8080](http://localhost:8080), puis [l’espace équipe](http://localhost:8080/admin.html). Le mot de passe est demandé dans le terminal et n’apparaît pas dans l’historique.
 
 ## Ce qui est fourni et ce que vous devez produire
