@@ -11,6 +11,9 @@ COPY backend/ ./
 RUN mkdir -p /var/lib/php/sessions && chown www-data:www-data /var/lib/php/sessions && chmod 700 /var/lib/php/sessions
 COPY docker/api/php.ini /usr/local/etc/php/conf.d/board.ini
 COPY docker/api/entrypoint.sh /usr/local/bin/board-entrypoint
-RUN chmod +x /usr/local/bin/board-entrypoint
+# Un checkout Windows ou une extraction ZIP peut apporter des CRLF.
+# Normaliser avant de laisser le noyau interpréter le shebang /bin/sh.
+RUN sed -i 's/\r$//' /usr/local/bin/board-entrypoint \
+    && chmod +x /usr/local/bin/board-entrypoint
 ENTRYPOINT ["board-entrypoint"]
 CMD ["php-fpm"]

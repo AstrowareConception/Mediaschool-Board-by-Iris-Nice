@@ -13,3 +13,4 @@ release/
 backend/.phpunit.cache/
 livrables/**/captures-privees/
 .DS_Store
+reports/

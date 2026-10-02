@@ -98,6 +98,7 @@ Sous PowerShell, le montage utilise également `${PWD}`. Le conteneur Composer s
 |---|---|---|
 | Docker daemon inaccessible | Docker Desktop est-il lancé ? | Démarrer le moteur Linux, réessayer `docker info` |
 | Port déjà pris | Une autre application utilise 8080 | `APP_PORT=8081` et recréation de web ; adapter URL et proxy Vite |
+| API unhealthy / `board-entrypoint: no such file` | Lire `docker compose logs --tail=100 api` ; un script CRLF Windows peut casser le shebang Linux | Récupérer le correctif, puis `docker compose up -d --build --force-recreate --wait` ; les données sont conservées |
 | Base unhealthy | `docker compose logs db` | Vérifier le secret et l’état du volume ; ne pas supprimer les données réelles |
 | Mot de passe DB modifié mais rejeté | Un volume existe déjà | Le secret d’un rôle existant ne change pas avec `.env` : l’exploitant le change dans PostgreSQL et aligne la configuration |
 | API échoue au démarrage | `docker compose logs api` | Lire la migration ou le message de configuration ; ajouter une nouvelle migration au lieu d’altérer une ancienne |
@@ -108,3 +109,17 @@ Sous PowerShell, le montage utilise également `${PWD}`. Le conteneur Composer s
 | 503 inscriptions | Ouverture désactivée | Développer et tester avant d’activer `REGISTRATIONS_OPEN` |
 
 `docker compose down -v` supprime les volumes. Cette commande n’appartient ni au déploiement ni au diagnostic de production.
+
+## Kit déjà cloné : récupérer un correctif de démarrage
+
+Depuis votre branche, intégrez la version actualisée du kit selon les règles du groupe. Sur `main` sans modifications locales :
+
+```bash
+git pull --ff-only
+docker compose up -d --build --force-recreate --wait
+docker compose ps
+```
+
+Sous Windows, `.gitattributes` impose les fins de ligne LF aux scripts et le Dockerfile normalise également l’entrypoint avant exécution. Cela protège les clones existants et les archives ZIP. Il n’est pas nécessaire de supprimer les volumes de données.
+
+Si l’API échoue encore, `docker compose logs --tail=100 api` indique maintenant les phases configuration, migrations et PHP-FPM. `docker inspect mediaschool-board-api-1 --format '{{json .State.Health}}'` donne les dernières erreurs du healthcheck. La vérification `pg_isready` du conteneur DB prouve que PostgreSQL répond, pas que les identifiants configurés dans l’API sont corrects.
